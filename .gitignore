@@ -1,0 +1,51 @@
+# Environment variables and credentials
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+*.p12
+*.pfx
+credentials*.json
+token*.json
+secrets/
+private/
+
+# User-specific resume data and generated outputs
+/user-data/
+/workspace/
+/output/
+/outputs/
+/generated/
+/personal-experience-library.md
+/*.docx
+/*.doc
+/*.pdf
+/resume-*.md
+/cv-*.md
+*-private-resume.*
+*-private-cv.*
+
+# Temporary and backup files
+/tmp/
+/temp/
+*.tmp
+*.temp
+*.bak
+*.swp
+~$*
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+
+# Editors and operating systems
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
