@@ -21,7 +21,7 @@ The built-in template retains the visual style of the source resume and uses vis
 - Two education entries and relevant courses
 - Software or domain skills and methods or theory
 - One work or internship entry
-- Three project entries
+- Two project or research entries
 - Awards and qualifications
 
 Replace placeholders with evidence-backed content. Remove unused rows, bullets, and sections rather than leaving placeholders in the delivered resume.
