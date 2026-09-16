@@ -1,4 +1,4 @@
 interface:
   display_name: "Perfect Resume"
-  short_description: "从个人经历采集、事实确认到JD匹配与定制简历生成的完整工作流"
-  default_prompt: "使用 $perfect-resume 采集并整理我的经历，再根据目标JD和简历模板生成针对性简历。"
+  short_description: "整理可追溯经历、分析岗位匹配并制作求职简历"
+  default_prompt: "使用 $perfect-resume 按我当前的请求整理经历、分析岗位或修改简历，并保留事实来源与个人贡献边界。"

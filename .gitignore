@@ -23,6 +23,7 @@ private/
 /*.pdf
 /resume-*.md
 /cv-*.md
+*.mapping.md
 *-private-resume.*
 *-private-cv.*
 

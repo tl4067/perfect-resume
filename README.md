@@ -18,16 +18,20 @@ The skill keeps reusable instructions and blank templates in the repository. A u
 - Tailor resume content to a target role while preserving scope, qualifiers, and source traceability.
 - Generate and visually verify a DOCX resume from a user-supplied template or the bundled ATS-oriented template.
 - Audit existing resume claims against the experience library.
+- Produce targeted or general job resumes, local edits, and evidence-aware reviews.
+- Audit built-in DOCX templates with a read-only checker before using them.
+- Create a same-name mapping file for generated or edited resumes, preserving source IDs and completed checks.
 
 ## How It Works
 
-1. Perfect Resume copies the blank experience-library template into the user's workspace when no library exists.
-2. The user describes an experience in natural language. The skill records confirmed facts and asks only for missing details that materially affect a resume claim.
-3. For a target JD, the skill builds a requirement-to-evidence matrix before drafting resume text.
+1. Perfect Resume routes the request as intake, JD analysis, gap planning, resume generation, local editing, or review.
+2. For intake, it copies the blank experience-library template when no library exists, records confirmed facts, and asks only for details that materially affect a resume claim.
+3. For a targeted JD, it builds a requirement-to-evidence matrix before drafting resume text; a general resume can be created without a JD.
 4. It selects the strongest relevant evidence, preserves uncertainty and participation boundaries, and omits unsupported keywords.
-5. When a DOCX deliverable is requested, it uses the user's template first or the bundled template, then renders and checks the result.
+5. For a DOCX deliverable, it prefers the user's template. Otherwise it audits and selects the bundled ATS or visual template, then renders and checks the result.
+6. Generated or edited resumes receive a same-name mapping file containing source IDs, context, qualifiers, unresolved items, and completed checks.
 
-The repository contains instructions and templates only. It does not include an API service, executable installer, or background process.
+The repository contains instructions, templates, a read-only DOCX audit script, and focused tests. It does not include an API service, executable installer, or background process.
 
 ## Installation
 
@@ -49,7 +53,7 @@ The repository contains instructions and templates only. It does not include an 
    %USERPROFILE%\.codex\skills\perfect-resume\
    ```
 
-3. Confirm that `SKILL.md` is directly inside the `perfect-resume` folder and keep `assets/`, `references/`, and `agents/` beside it.
+3. Confirm that `SKILL.md` is directly inside the `perfect-resume` folder and keep `agents/`, `assets/`, `references/`, `scripts/`, and `tests/` beside it.
 
 4. Start a new Codex task and invoke `$perfect-resume`, or describe a matching resume task so Codex can select the skill automatically.
 
@@ -91,20 +95,34 @@ perfect-resume/
 │   └── openai.yaml
 ├── assets/
 │   ├── personal-experience-library.md
-│   └── resume-template-ats.docx
-└── references/
-    ├── docx-template-map.md
-    ├── interview-and-evidence.md
-    └── jd-matching-and-generation.md
+│   ├── resume-template-ats.docx
+│   └── resume-template-visual.docx
+├── references/
+│   ├── docx-template-map.md
+│   ├── delivery-and-versioning.md
+│   ├── interview-and-evidence.md
+│   └── jd-matching-and-generation.md
+├── scripts/
+│   └── audit_docx_template.py
+└── tests/
+    ├── behavior-cases.md
+    └── test_audit_docx_template.py
 ```
 
 - `SKILL.md` defines routing, evidence boundaries, and the end-to-end workflow.
 - `agents/openai.yaml` provides display metadata for compatible Codex environments.
 - `assets/personal-experience-library.md` is an unfilled, reusable experience-library template.
-- `assets/resume-template-ats.docx` is the bundled anonymized resume template.
-- `references/` contains detailed rules loaded only for the relevant workflow stage.
+- `assets/resume-template-ats.docx` is the machine-parsing-priority template.
+- `assets/resume-template-visual.docx` is the visual template for requests that retain the visual system or explicitly include a photo.
+- `references/` contains detailed rules loaded only for the relevant workflow stage, including delivery and versioning checks.
+- `scripts/audit_docx_template.py` performs a read-only blank-template privacy and structure audit.
+- `tests/` contains behavior cases and tests for the DOCX audit script.
 
-There are currently no repository scripts or automated tests.
+Run the audit script on a built-in template with:
+
+```bash
+python scripts/audit_docx_template.py assets/resume-template-ats.docx --profile blank-template
+```
 
 ## Privacy
 
@@ -138,16 +156,20 @@ Perfect Resume 是一个 Codex Skill，用于将自由叙述的职业经历整�
 - 在保留参与范围、限定词和来源追溯关系的前提下，针对目标岗位调整简历内容。
 - 使用用户提供的模板或仓库内置的 ATS 友好模板生成并可视化检查 DOCX 简历。
 - 对照个人经历库审查现有简历中的表述。
+- 生成针对岗位或通用求职简历，执行本地编辑，并进行基于证据的审查。
+- 使用只读检查器审计内置 DOCX 模板，再决定是否使用。
+- 为生成或编辑的简历创建同名映射文件，保留来源 ID 和已完成的检查。
 
 ## 工作流程
 
-1. 如果用户工作目录中尚无经历库，Perfect Resume 会复制空白经历库模板。
-2. 用户使用自然语言描述经历，Skill 记录已确认事实，只追问会实质影响简历表述的缺失信息。
-3. 面向目标 JD 时，Skill 会先建立“岗位要求—经历证据”匹配矩阵，再起草简历内容。
+1. Perfect Resume 将请求路由为经历采集、JD 分析、能力缺口规划、简历生成、本地编辑或审查。
+2. 采集经历时，如果用户工作目录中尚无经历库，Skill 会复制空白模板，记录已确认事实，只追问会实质影响简历表述的缺失信息。
+3. 面向目标 JD 时，Skill 会先建立“岗位要求—经历证据”匹配矩阵，再起草简历内容；通用求职简历可以不依赖 JD。
 4. Skill 选择与岗位最相关的可靠证据，保留不确定性和参与边界，并省略缺少支持的关键词。
-5. 用户要求 DOCX 成果时，Skill 优先使用用户提供的模板，否则使用内置模板，并在生成后渲染检查。
+5. 用户要求 DOCX 成果时，Skill 优先使用用户提供的模板，否则先审计并选择内置 ATS 模板或视觉模板，再渲染检查。
+6. 生成或编辑的简历会获得同名映射文件，其中记录来源 ID、上下文、限定词、未解决事项和已完成的检查。
 
-本仓库只包含指令和模板，不包含 API 服务、可执行安装程序或后台进程。
+本仓库包含指令、模板、只读 DOCX 审计脚本和针对性测试，不包含 API 服务、可执行安装程序或后台进程。
 
 ## 安装
 
@@ -169,7 +191,7 @@ Perfect Resume 是一个 Codex Skill，用于将自由叙述的职业经历整�
    %USERPROFILE%\.codex\skills\perfect-resume\
    ```
 
-3. 确认 `SKILL.md` 直接位于 `perfect-resume` 目录下，并保留同级的 `assets/`、`references/` 和 `agents/` 目录。
+3. 确认 `SKILL.md` 直接位于 `perfect-resume` 目录下，并保留同级的 `agents/`、`assets/`、`references/`、`scripts/` 和 `tests/` 目录。
 
 4. 新建 Codex 任务并调用 `$perfect-resume`，或者直接描述符合触发范围的简历任务，让 Codex 自动选择该 Skill。
 
@@ -209,20 +231,34 @@ perfect-resume/
 │   └── openai.yaml
 ├── assets/
 │   ├── personal-experience-library.md
-│   └── resume-template-ats.docx
-└── references/
-    ├── docx-template-map.md
-    ├── interview-and-evidence.md
-    └── jd-matching-and-generation.md
+│   ├── resume-template-ats.docx
+│   └── resume-template-visual.docx
+├── references/
+│   ├── docx-template-map.md
+│   ├── delivery-and-versioning.md
+│   ├── interview-and-evidence.md
+│   └── jd-matching-and-generation.md
+├── scripts/
+│   └── audit_docx_template.py
+└── tests/
+    ├── behavior-cases.md
+    └── test_audit_docx_template.py
 ```
 
 - `SKILL.md` 定义任务路由、证据边界和完整工作流程。
 - `agents/openai.yaml` 为兼容的 Codex 环境提供界面显示信息。
 - `assets/personal-experience-library.md` 是未填写的通用个人经历库模板。
-- `assets/resume-template-ats.docx` 是经过匿名化处理的内置简历模板。
-- `references/` 保存仅在对应工作阶段加载的详细规则。
+- `assets/resume-template-ats.docx` 是优先考虑机器解析的内置模板。
+- `assets/resume-template-visual.docx` 用于需要保留视觉系统或明确要求照片的场景。
+- `references/` 保存仅在对应工作阶段加载的详细规则，包括交付和版本检查。
+- `scripts/audit_docx_template.py` 执行只读的空白模板隐私与结构审计。
+- `tests/` 保存行为用例和 DOCX 审计脚本测试。
 
-当前仓库不包含脚本或自动化测试。
+使用以下命令审计内置 ATS 模板：
+
+```bash
+python scripts/audit_docx_template.py assets/resume-template-ats.docx --profile blank-template
+```
 
 ## 隐私
 
