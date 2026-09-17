@@ -27,7 +27,7 @@ Use this compact format:
     - Target role: [role or general resume]
     - JD source: [path, necessary user-provided snapshot, or none]
     - Language: [language]
-    - Template: [user template, machine parsing priority, or visual]
+    - Template: [user template or built-in default template]
     - Experience IDs: [IDs used]
 
     ## Key claims

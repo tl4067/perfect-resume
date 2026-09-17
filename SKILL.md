@@ -58,7 +58,7 @@ Read references/interview-and-evidence.md for the intake question gate, two suff
 1. Identify whether the request is targeted, general, local edit, review, intake, or gap planning.
 2. For intake, read the interview reference once; for JD or resume work, read the JD reference and then load only relevant records from capability/result indexes.
 3. For a targeted resume, decompose the JD and produce the matching report before drafting. Use statuses 已满足, 部分满足, 未知, and 明确不满足; keep source, relevance, depth, and recency as separate internal judgments.
-4. Select the template: a user-supplied template wins. For an unspecified channel, use the machine-parsing-priority template; use the visual template when the user asks to retain the visual system or explicitly wants a photo. Read references/docx-template-map.md.
+4. Select the template: a user-supplied template wins. When no template is supplied, use the single built-in template `assets/resume-template-ats.docx` for targeted and general resumes. Remove the generic PHOTO placeholder when the user does not request a photo. Read references/docx-template-map.md.
 5. Select evidence by role value and density rather than a fixed number of experiences. Edit bullets so each focuses on one main action or result; the experience as a whole should cover goal, personal action, and result or deliverable when supported.
 6. Use the documents:documents skill for DOCX reading, editing, rendering, and verification. Run the read-only template audit before using a built-in template:
    python scripts/audit_docx_template.py <docx> --profile blank-template
