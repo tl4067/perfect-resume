@@ -16,7 +16,7 @@ The skill keeps reusable instructions and blank templates in the repository. A u
 - Decompose a JD into requirements and map each requirement to supporting evidence.
 - Identify unsupported requirements and propose small, verifiable gap-validation tasks.
 - Tailor resume content to a target role while preserving scope, qualifiers, and source traceability.
-- Generate and visually verify a DOCX resume from a user-supplied template or the bundled ATS-oriented template.
+- Generate and visually verify a DOCX resume from a user-supplied template or the bundled default and visual templates.
 - Audit existing resume claims against the experience library.
 - Produce targeted or general job resumes, local edits, and evidence-aware reviews.
 - Audit built-in DOCX templates with a read-only checker before using them.
@@ -28,7 +28,7 @@ The skill keeps reusable instructions and blank templates in the repository. A u
 2. For intake, it copies the blank experience-library template when no library exists, records confirmed facts, and asks only for details that materially affect a resume claim.
 3. For a targeted JD, it builds a requirement-to-evidence matrix before drafting resume text; a general resume can be created without a JD.
 4. It selects the strongest relevant evidence, preserves uncertainty and participation boundaries, and omits unsupported keywords.
-5. For a DOCX deliverable, it prefers the user's template. Otherwise it audits and selects the bundled ATS or visual template, then renders and checks the result.
+5. For a DOCX deliverable, it prefers the user's template. Otherwise it audits and selects the bundled default (`resume-template-ats.docx`) or visual template, then renders and checks the result.
 6. Generated or edited resumes receive a same-name mapping file containing source IDs, context, qualifiers, unresolved items, and completed checks.
 
 The repository contains instructions, templates, a read-only DOCX audit script, and focused tests. It does not include an API service, executable installer, or background process.
@@ -112,8 +112,8 @@ perfect-resume/
 - `SKILL.md` defines routing, evidence boundaries, and the end-to-end workflow.
 - `agents/openai.yaml` provides display metadata for compatible Codex environments.
 - `assets/personal-experience-library.md` is an unfilled, reusable experience-library template.
-- `assets/resume-template-ats.docx` is the machine-parsing-priority template.
-- `assets/resume-template-visual.docx` is the visual template for requests that retain the visual system or explicitly include a photo.
+- `assets/resume-template-ats.docx` is the bundled one-page V4 default template; the `ATS` filename describes the default route and does not certify compatibility with every recruiting system.
+- `assets/resume-template-visual.docx` is the alternate visual template for requests that retain the visual system or explicitly include a photo.
 - `references/` contains detailed rules loaded only for the relevant workflow stage, including delivery and versioning checks.
 - `scripts/audit_docx_template.py` performs a read-only blank-template privacy and structure audit.
 - `tests/` contains behavior cases and tests for the DOCX audit script.
@@ -154,7 +154,7 @@ Perfect Resume 是一个 Codex Skill，用于将自由叙述的职业经历整�
 - 拆解 JD 要求，并将每项要求映射到对应证据。
 - 识别缺少证据支持的要求，并设计小型、可验证的能力补齐任务。
 - 在保留参与范围、限定词和来源追溯关系的前提下，针对目标岗位调整简历内容。
-- 使用用户提供的模板或仓库内置的 ATS 友好模板生成并可视化检查 DOCX 简历。
+- 使用用户提供的模板或仓库内置的默认模板、视觉模板生成并可视化检查 DOCX 简历。
 - 对照个人经历库审查现有简历中的表述。
 - 生成针对岗位或通用求职简历，执行本地编辑，并进行基于证据的审查。
 - 使用只读检查器审计内置 DOCX 模板，再决定是否使用。
@@ -166,7 +166,7 @@ Perfect Resume 是一个 Codex Skill，用于将自由叙述的职业经历整�
 2. 采集经历时，如果用户工作目录中尚无经历库，Skill 会复制空白模板，记录已确认事实，只追问会实质影响简历表述的缺失信息。
 3. 面向目标 JD 时，Skill 会先建立“岗位要求—经历证据”匹配矩阵，再起草简历内容；通用求职简历可以不依赖 JD。
 4. Skill 选择与岗位最相关的可靠证据，保留不确定性和参与边界，并省略缺少支持的关键词。
-5. 用户要求 DOCX 成果时，Skill 优先使用用户提供的模板，否则先审计并选择内置 ATS 模板或视觉模板，再渲染检查。
+5. 用户要求 DOCX 成果时，Skill 优先使用用户提供的模板，否则先审计并选择内置默认模板（`resume-template-ats.docx`）或视觉模板，再渲染检查。
 6. 生成或编辑的简历会获得同名映射文件，其中记录来源 ID、上下文、限定词、未解决事项和已完成的检查。
 
 本仓库包含指令、模板、只读 DOCX 审计脚本和针对性测试，不包含 API 服务、可执行安装程序或后台进程。
@@ -248,13 +248,13 @@ perfect-resume/
 - `SKILL.md` 定义任务路由、证据边界和完整工作流程。
 - `agents/openai.yaml` 为兼容的 Codex 环境提供界面显示信息。
 - `assets/personal-experience-library.md` 是未填写的通用个人经历库模板。
-- `assets/resume-template-ats.docx` 是优先考虑机器解析的内置模板。
+- `assets/resume-template-ats.docx` 是当前一页 V4 内置默认模板；文件名中的 `ATS` 表示默认入口，不代表对所有招聘系统的兼容性认证。
 - `assets/resume-template-visual.docx` 用于需要保留视觉系统或明确要求照片的场景。
 - `references/` 保存仅在对应工作阶段加载的详细规则，包括交付和版本检查。
 - `scripts/audit_docx_template.py` 执行只读的空白模板隐私与结构审计。
 - `tests/` 保存行为用例和 DOCX 审计脚本测试。
 
-使用以下命令审计内置 ATS 模板：
+使用以下命令审计内置默认模板：
 
 ```bash
 python scripts/audit_docx_template.py assets/resume-template-ats.docx --profile blank-template

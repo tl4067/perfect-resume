@@ -1,63 +1,60 @@
-# DOCX template map
+# 默认 DOCX 模板映射
 
-## Template choice
+## 目录
 
-1. A user-supplied template always wins.
-2. If the user asks to retain an existing design, preserve its visual system and disclose any parsing risk.
-3. If no template is supplied and the channel is a recruiting upload, use the machine-parsing-priority template.
-4. If the user explicitly wants the original visual layout or a photo, use the visual template.
-5. If the channel is unknown and asking would interrupt a straightforward task, use the machine-parsing-priority template and state that assumption.
+1. 模板位置
+2. 版式系统
+3. 占位符映射
+4. 内容容量与删减规则
+5. 一页平衡与隐私检查
 
-Do not turn template choice into a fixed extra question. Do not export every profile field. Include photo, age, political affiliation, or other sensitive fields only when the user asks or a clear application requirement calls for them.
+## 模板位置
 
-## Built-in files
+用户未提供指定模板时，复制 `assets/resume-template-ats.docx` 后再编辑；不得覆盖技能资产原件。
 
-| Use | File | Structure | Default image rule |
-|---|---|---|---|
-| Machine parsing priority | assets/resume-template-ats.docx | Single-column ordinary paragraphs with clear headings and contact text at the top | No photo |
-| Visual preservation | assets/resume-template-visual.docx | Original three-column header and deep-blue hierarchy | Use a user-provided photo only when requested; remove the placeholder when none is supplied |
+该模板以用户指定的 V4 简历版式为来源，已清除真实个人信息。它采用一页 A4 竖版和深蓝色层级系统，适合按目标 JD 重新填充。
 
-The filename ATS describes the intended structure, not compatibility certification. Successful local text extraction does not prove every recruiting system will parse a file correctly.
+`assets/resume-template-visual.docx` 仍保留为另一份视觉模板；只有用户明确要求使用该资产时才切换。文件名 `resume-template-ats.docx` 表示它是未指定模板时的默认入口，不代表任何招聘系统的兼容性保证。
 
-Before using a built-in template, run:
+使用内置模板前，先执行 `python scripts/audit_docx_template.py <docx> --profile blank-template`；随后按本映射完成内容、隐私和渲染检查。
 
-python scripts/audit_docx_template.py <docx> --profile blank-template
+## 版式系统
 
-The audit is read-only and returns JSON. Exit 0 means no automatically detected blocking issue or review item; exit 1 means a blocking issue or manual review item was found; exit 2 means the file could not be checked. A pass is not a universal anonymity, accessibility, render, or ATS guarantee.
+- A4 竖版、单节；左右页边距约 0.47 英寸，上下页边距约 0.32 英寸。
+- 页首为三行三列表格（三栏页首），照片栏和身份栏纵向合并，右栏依次放置电话、邮箱和求职方向。
+- 正文顺序固定为：个人概述、教育背景、技术能力、实习经历、项目经历、荣誉奖项。
+- 正文默认约 10 磅，章节标题约 11.5 磅；中文使用微软雅黑，英文与数字使用 Arial。
+- 深蓝色用于页首关键词、章节标记、模块标签和重点字段；正文保持黑色或深灰色。
+- 日期使用模板现有制表位靠右对齐。保留照片占位、列宽、缩进、段前段后距、项目符号和原有一页布局。
 
-## Machine parsing priority template
+## 占位符映射
 
-- A4 portrait, one section, ordinary body paragraphs, and conventional headings.
-- Contact details appear as consecutive text near the beginning, not inside a table or text box.
-- Use clear section labels such as Summary, Education, Skills, Experience, Projects, and Awards; adapt language to the user's request.
-- Use normal bullets and right-aligned dates only when the structure remains extractable.
-- Do not add a photo, decorative text box, hidden text, or multi-column body layout.
-- Keep the default body around 10 to 10.5 pt with readable spacing; do not shrink type to fill a page.
+### 三栏页首
 
-## Visual template
+- 照片占位：通用 `PHOTO` 图，不含任何真实人物；如用户提供照片，可在保持尺寸的前提下替换。
+- 中栏：`[姓名]`、`[专业方向]`、`[行业关键词]`、`[核心能力]`、`[岗位关键词]`、`[学历/届别]`、`[其他信息]`、`[语言/证书]`。
+- 右栏：`[手机号]`、`[邮箱]`、`[目标岗位]`。
 
-- Preserve the original three-column header, deep-blue hierarchy, margins, fonts, indentation, date tabs, and bullet style where practical.
-- The visual system may be reordered for a JD, but placeholder text is never a required field.
-- The photo cell contains only a generic PHOTO placeholder in the blank asset. Replace it with a user-approved image at the same size or remove the placeholder and rebalance the header.
-- Inspect the reading order of contact details, dates, experience text, headers, footers, alt text, comments, revisions, custom XML, and document properties.
+### 正文
 
-## Content mapping
+- 个人概述：用 2 至 3 项证据概括专业背景、核心能力和岗位价值。
+- 教育背景：两段学校记录、专业、学历、时间、语言或证书及相关课程；只有一段记录时删除第二行。
+- 技术能力：一行专业软件、一行仿真理论或工程能力；只保留经历库已有证据。
+- 实习经历：一段组织与岗位标题，最多两个行动结果要点；内容不足时删除未用要点。
+- 项目经历：第一项支持项目简介、两个工作模块和四个要点；第二、第三项各支持两个要点。按 JD 选择一至两项强证据，删除未用项目或段落。
+- 荣誉奖项：支持两行、每行最多三项；优先使用岗位相关或区分度高的奖项、证书和活动。
 
-| Resume area | Evidence source |
-|---|---|
-| Header and direction | Basic profile plus stated target |
-| Summary | Two or three strongest evidence-backed capabilities and role value |
-| Education | EDU records |
-| Skills | Capability index entries whose state and scope allow use |
-| Work or internship | WORK and EXP records |
-| Projects or research | PROJ and RES records selected for the target |
-| Portfolio, papers, or patents | PORT records when requested and in scope |
-| Awards and credentials | ACH records with approved personal data |
+## 内容容量与删减规则
 
-For a one-page resume, use this balancing order: add relevant evidence-backed material already in the library; compress supported experience into action-and-result bullets; rebalance section order and normal spacing. If evidence remains sparse, retain clean white space. Do not add filler, generic self-evaluations, unrelated entries, or unreadably small text.
+- 保留模板的视觉系统，根据 JD 调整内容；不要把模板占位文本当作必须填满的字段。
+- 经历要点优先使用“问题或目标—个人行动—结果或验证”结构，并保留参与范围、估计值、条件和状态限定。
+- 内容超出一页时，先压缩句子或删除较弱的要点、项目和奖项，再考虑字号；不得改变表格结构和页边距。
+- 内容较少时，可增加经历库中与 JD 相关且有证据的课程、技能、项目或资质；证据不足时保留合理留白。
+- 删除未使用的段落、项目符号、模块标签和第二教育记录，不得留下方括号占位符。
 
-When content exceeds the requested page count, compress by relevance and information density. Do not mechanically delete a second project, enforce a three-to-five experience quota, or force a two-page senior resume into one page.
+## 一页平衡与隐私检查
 
-## Placeholder and layout cleanup
-
-Before delivery, remove unused brackets, PHOTO graphics when no photo is requested, empty bullets, empty section labels, and unused modules. Keep contact text, dates, experience order, and qualifiers complete. Render the requested page count and inspect every page for clipping, overlap, overflow, missing glyphs, and readability.
+- 渲染并检查唯一页面，确认页首、日期、项目符号和页尾不裁切、不重叠、不跨页。
+- 检查正文、表格、图片替代文本、页眉页脚、批注、修订、自定义 XML 和文档属性。
+- 默认模板不得包含真实姓名、联系方式、照片、学校、单位、项目、奖项、指标或作者信息。
+- 最终简历只包含当前用户批准的个人信息；模板中的 `PHOTO` 图只作为通用照片占位。
